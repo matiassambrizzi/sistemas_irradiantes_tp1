@@ -13,6 +13,9 @@ from smithplot import SmithAxes
 PREV_DIR = "../"
 IMG_DIR = "imagenes/"
 SRC_DIR = "src/"
+IMG_TYPE = ".png"
+S1P_DATA_DIR = "ArchivosDeMedicion/ArchivosS1p/"
+S2P_DATA_DIR = "ArchivosDeMedicion/ArchivosS2p/"
 
 """@brief funcion para leer data de un archivo
 @param location es la ubicacion del archivo
@@ -22,8 +25,8 @@ SRC_DIR = "src/"
 """
 
 def read_data(location, cols, delim):
-    data = np.genfromtxt(location \
-                      , delimiter=delim, skip_header=8, usecols=cols)
+    data = np.genfromtxt(location,
+                         delimiter=delim, skip_header=8, usecols=cols)
     return data
 
 """@brief transformar un array de dos dimensiones a un numero complejo \
@@ -40,29 +43,31 @@ def reflexion_coefficient_to_impedance(arr, caracteristic_impedance):
 
 """@brief plot smith chart function
 """
-def plot_smith_chart(input_impedance, caracteristic_impedance,file_name):
+def plot_smith_chart(input_impedance, caracteristic_impedance, file_name):
     fig = plt.figure(figsize=(10, 8))
     SmithAxes.update_scParams(axes_impedance=caracteristic_impedance)
     plt.subplot(1, 1, 1, projection='smith', grid_major_enable=True)
     plt.plot(input_impedance, datatype=SmithAxes.Z_PARAMETER)
     plt.show()
-    fig.savefig(PREV_DIR+IMG_DIR+file_name+'.png',bbox_inches='tight',dpi=150)
-    
-    
+    fig.savefig(PREV_DIR+IMG_DIR+file_name+IMG_TYPE, bbox_inches='tight', dpi=150)
 """@brief funcion principal
 """
 def main():
-
     caracteristic_impedance: int = 50
-    data = read_data('../ArchivosDeMedicion/ArchivosS1p/AutoSave1.s1p', \
-                     (0, 1, 2), '\t')
-    #Transform data to complex number
-    s_11_parameter = array_to_complex(data, 1, 2)
-    #Transfomr reflexion to impedance
-    input_impedance = reflexion_coefficient_to_impedance(s_11_parameter, \
-                                             caracteristic_impedance)
 
-    plot_smith_chart(input_impedance,caracteristic_impedance,'first')
+    s1p_file = PREV_DIR + S1P_DATA_DIR + 'AutoSave'
+    #list comprehension
+    s1p_files = [s1p_file+str(n)+'.s1p' for n in range(1, 10)]
+    #Ploteo la carta de smith para todos los archivos
+    for file in s1p_files:
+        print(file)
+        data = read_data(file,
+                         (0, 1, 2), '\t')
+        s_11_parameter = array_to_complex(data, 1, 2)
+        input_impedance = reflexion_coefficient_to_impedance(s_11_parameter,
+                                                             caracteristic_impedance)
+        plot_smith_chart(input_impedance, caracteristic_impedance,
+                         file.split('/')[-1])
 
 if __name__ == '__main__':
     main()
