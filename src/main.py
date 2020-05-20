@@ -60,7 +60,8 @@ def plot_smith_chart(input_impedance, caracteristic_impedance, wd, file_name):
     plt.subplot(1, 1, 1, projection='smith', grid_major_enable=True)
     plt.plot(input_impedance, datatype=SmithAxes.Z_PARAMETER)
     plt.show()
-    fig.savefig(directory / f'{file_name}.{IMG_TYPE}', bbox_inches='tight', dpi=150)
+    fig.savefig(directory / f'{file_name}.{IMG_TYPE}',
+                bbox_inches='tight', dpi=150)
 
 def main():
     """@brief funcion principal
@@ -77,7 +78,8 @@ def main():
         s_11_parameter = array_to_complex(data, 1, 2)
         input_impedance = reflexion_coefficient_to_impedance(s_11_parameter,
                                                              caracteristic_impedance)
-        plot_smith_chart(input_impedance, caracteristic_impedance, WORKING_DIR, file.name)
+        plot_smith_chart(input_impedance, caracteristic_impedance,
+                         WORKING_DIR, file.name)
 
 if __name__ == '__main__':
     main()    
